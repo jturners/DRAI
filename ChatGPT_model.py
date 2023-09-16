@@ -1,5 +1,6 @@
 import os
 import openai
+from write_to_csv import writeToCsv
 
 
 openai.organization = "org-6AKIjdbpljcerbhjbd24A2Qz"
@@ -14,7 +15,7 @@ def simplify(prompt, model="gpt-4"):
     messages = [
         {
             "role": "system",
-            "content": "Simpify and summarise content given by the user or help user find relevent information of subject",
+            "content": "Simpify and summarise content given by the user"
         }
         ]
     messages.append(prompt)
@@ -24,11 +25,38 @@ def simplify(prompt, model="gpt-4"):
 
     return response.choices[0].message["content"]
 
+def getGeneralSearch(prompt, model="gpt-4"):
+    messages = [
+        {
+            "role": "system",
+            "content": "Help user find relevent information of content given"
+        }
+        ]
+    messages.append(prompt)
+    response = openai.ChatCompletion.create(model=model, temperature=0, messages=messages)
+    return response.choices[0].message["content"]
+
+def formatResponse(response, medicine):
+    return {"Medicine": medicine, "Summary": response}
+
 
 # test case
 #prompt = {"role": "user", "content": "Meloxicam - Meloxicam is a nonsteroidal anti-inflammatory drug (NSAID) used to relieve the symptoms of arthritis (juvenile rheumatoid arthritis, osteoarthritis, and rheumatoid arthritis), such as inflammation, swelling, stiffness, and joint pain."}
-userInput = input('Content to summarise: ')
-prompt = {"role": "user", "content": userInput}
 
-response = simplify(prompt)
-print(response)
+# input requests are used for testing purposes
+csv = []
+medicine = input('Medicine ')
+
+userInput = input('Content to summarise: ')
+summarisePrompt = {"role": "user", "content": userInput}
+
+lookUpPrompt = {"role": "user", "content": f"what is {medicine}"}
+
+summariseResponse = simplify(summarisePrompt)
+csv.append(formatResponse(summariseResponse, medicine))
+
+lookUpResponse = getGeneralSearch(lookUpPrompt)
+csv.append(formatResponse(lookUpResponse, medicine))
+
+
+writeToCsv(csv)

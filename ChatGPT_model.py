@@ -19,6 +19,8 @@ query = [
 'brand_name', #openfda
 'product_type',
 'route',
+'generic_name',
+'substance_name',
 'indications_and_usage',
 'dosage_and_administration',
 'dosage_forms_and_strengths',
@@ -49,7 +51,7 @@ for i in range(n):
     print()
     
     for q in query:
-        if q == 'product_type' or q == 'route':
+        if q == 'product_type' or q == 'route' or q == 'substance_name' or q == 'generic_name' or q == 'brand_name':
             
             if 'openfda' in result_keys:
                 if q in results['openfda'].keys():

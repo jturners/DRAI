@@ -1,5 +1,5 @@
 import os, json
-
+from write_to_csv import writeToCsv
 import pandas as pd
 
 # Put openFDA.json in parent folder
@@ -11,7 +11,7 @@ with open(file) as project_file:
 df = pd.json_normalize(data)
 
 #number of medicines used from the database
-n = 10
+n = 50
 
 query = [
 'brand_name', #openfda
@@ -66,8 +66,12 @@ for i in range(n):
         if 'brand_name' in results['openfda'].keys():
             all_inf_dict[results['openfda']['brand_name'][0]] = inf_dict
 
-def getMed(n):
+def getMed(x):
 #this is a dict containing all the info about med1
-    return all_inf_dict[list(all_inf_dict.keys())[n]]
+    return all_inf_dict[list(all_inf_dict.keys())[x]]
+
+# medicineList = [getMed(x) for x in range(45)]
 
 
+# with open('first45.json', 'w') as f:    
+#     json.dump(medicineList, f, indent=4)

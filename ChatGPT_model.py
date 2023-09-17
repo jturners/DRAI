@@ -10,7 +10,7 @@ file = "first45.json"
 with open(file) as project_file:    
     data = json.load(project_file)  
 
-firstN = 10
+firstN = 3
 medlist = data[0: firstN]
 #medName = medlist[0]["substance_name"]
 
@@ -47,7 +47,7 @@ def simplify(prompt, model="gpt-4"):
     messages = [
         {
             "role": "system",
-            "content": "Simplify and summarise the content given by the user"
+            "content": "Simplify and summarise the content given by the user in 4000 characters"
         }
         ]
     messages.append(prompt)
@@ -70,6 +70,7 @@ def getGeneralSearch(prompt, model="gpt-4"):
 
 # def formatResponse(response, medicine):
 #     return {"Medicine": medicine, "Summary": response}
+dataBasedGPT_data = []
 start = time.time()
 sumSubSummary = ''
 for med1 in medlist:
@@ -89,8 +90,9 @@ for med1 in medlist:
         f.write(sumSubSummary)
         f.write(2*"\n")
 
-    f.close()
+    dataBasedGPT_data.append(sumSubSummary)
     
+#now we can use medlist and dataBasedGPT_data lists
 
 end = time.time()
 print(end-start)

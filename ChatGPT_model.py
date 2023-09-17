@@ -10,8 +10,9 @@ file = "first45.json"
 with open(file) as project_file:    
     data = json.load(project_file)  
 
-med1 = data[0]
-medName = med1["substance_name"]
+firstN = 10
+medlist = data[0: firstN]
+#medName = medlist[0]["substance_name"]
 
 descriptionList = ['substance_name',
                     'indications_and_usage',
@@ -71,20 +72,25 @@ def getGeneralSearch(prompt, model="gpt-4"):
 #     return {"Medicine": medicine, "Summary": response}
 start = time.time()
 sumSubSummary = ''
-medDescription = ''
-for category in descriptionList:
-    if category in med1:
-        name = category.replace('_', ' ')
-        description = med1[category]
-        if len(description) > 1000:
-            medDescription = simplify({"role": "user", "content": description} )
-            sumSubSummary += f'{name}: {medDescription} \n'
-        else:
-            sumSubSummary += f'{name}: {description} \n'
+for med1 in medlist:
+    medDescription = ''
+    for category in descriptionList:
+        if category in med1:
+            name = category.replace('_', ' ')
+            description = med1[category]
+            if len(description) > 1000:
+                medDescription = simplify({"role": "user", "content": description} )
+                sumSubSummary += f'{name}: {medDescription} \n'
+            else:
+                sumSubSummary += f'{name}: {description} \n'
 
 
-with open('output1.txt', 'w') as f:
-    f.write(sumSubSummary)
+    with open('output1.txt', 'a') as f:
+        f.write(sumSubSummary)
+        f.write(2*"\n")
+
+    f.close()
+    
 
 end = time.time()
 print(end-start)

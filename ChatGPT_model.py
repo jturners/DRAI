@@ -49,6 +49,20 @@ def simplify(prompt, medName, model="gpt-4"):
 
     return response.choices[0].message["content"]
 
+def simplify2(prompt, medName, model="gpt-4"):
+    messages = [
+        {
+            "role": "system",
+            "content": f"Summarise the medicinal content given by the user for the medicine {medName}. Preserve and emphasize statistical content. List them in the categories of indications and usage, dosage and administration ,dosage forms and strengths, contraindications, warnings and cautions" 
+        }
+        ]
+    messages.append(prompt)
+    response = openai.ChatCompletion.create(
+        model=model, temperature=0, messages=messages
+    )
+
+    return response.choices[0].message["content"]
+
 def getGeneralSearch(prompt, model="gpt-4"):
     messages = [
         {
@@ -90,7 +104,7 @@ def getGPTSummary(medlist, descriptionList):
                     sumSubSummary += f'{name}: {medDescription}'
                 else:
                     sumSubSummary += f'{name}: {description}'
-        ultimateSummary += simplify({"role": "user", "content": sumSubSummary}, med1["substance_name"])
+        ultimateSummary += simplify2({"role": "user", "content": sumSubSummary}, med1["substance_name"])
         GPTSummaryList.append(ultimateSummary)
         
     return GPTSummaryList

@@ -6,7 +6,7 @@ start = time.time()
 file = "first45.json"
 
 with open(file) as project_file:    
-    data = json.load(project_file)  
+    data = json.load(project_file) 
 
 descriptionList = ['substance_name',
                     'indications_and_usage',
@@ -35,11 +35,11 @@ openai.organization = "org-6AKIjdbpljcerbhjbd24A2Qz"
 openai.api_key = os.getenv("OPENAI_API_KEY")
 openai.Model.list()
 
-def simplify(prompt, model="gpt-4"):
+def simplify(prompt, medName, model="gpt-4"):
     messages = [
         {
             "role": "system",
-            "content": "Summarise the medicinal content given by the user without losing factual and statistical content"
+            "content": f"Summarise the medicinal content for {medName} given by the user without losing factual and statistical content" 
         }
         ]
     messages.append(prompt)
@@ -86,11 +86,11 @@ def getGPTSummary(medlist, descriptionList):
                 name = category.replace('_', ' ')
                 description = med1[category]
                 if len(description) > 1000:
-                    medDescription = simplify({"role": "user", "content": description})
+                    medDescription = simplify({"role": "user", "content": description}, med1["substance_name"])
                     sumSubSummary += f'{name}: {medDescription}'
                 else:
                     sumSubSummary += f'{name}: {description}'
-        ultimateSummary += simplify({"role": "user", "content": sumSubSummary})
+        ultimateSummary += simplify({"role": "user", "content": sumSubSummary}, med1["substance_name"])
         GPTSummaryList.append(ultimateSummary)
         
     return GPTSummaryList

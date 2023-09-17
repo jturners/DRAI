@@ -60,7 +60,7 @@ def getGeneralSearch(prompt, model="gpt-4"):
     messages = [
         {
             "role": "system",
-            "content": "Help user find relevent information of content given"
+            "content": "Help user find relevent information about the given medicine, with indications and usage, dosage and administration ,dosage forms and strengths, contraindications,warnings and cautions"
         }
         ]
     messages.append(prompt)
@@ -69,6 +69,7 @@ def getGeneralSearch(prompt, model="gpt-4"):
 
 # def formatResponse(response, medicine):
 #     return {"Medicine": medicine, "Summary": response}
+
 start = time.time()
 sumSubSummary = ''
 medDescription = ''
@@ -93,9 +94,6 @@ print(end-start)
 
 
 
-
-
-
 # test case
 #prompt = {"role": "user", "content": "Meloxicam - Meloxicam is a nonsteroidal anti-inflammatory drug (NSAID) used to relieve the symptoms of arthritis (juvenile rheumatoid arthritis, osteoarthritis, and rheumatoid arthritis), such as inflammation, swelling, stiffness, and joint pain."}
 
@@ -103,23 +101,13 @@ print(end-start)
 # csv = []
 # medicine = input('Medicine ')
 
-# userInput = input('Content to summarise: ')
-# summarisePrompt = {"role": "user", "content": userInput}
-
 # lookUpPrompt = {"role": "user", "content": f"what is {medicine}"}
 
-# summariseResponse = simplify(summarisePrompt)
-# csv.append(formatResponse(summariseResponse, medicine))
-
+#medicineName = med1['substance_name']
 # lookUpResponse = getGeneralSearch(lookUpPrompt)
 # csv.append(formatResponse(lookUpResponse, medicine))
 
-
 # writeToCsv(csv)
-
-# medDescription = {"role": "user", "content": med1['warnings_and_cautions']} 
-# newDescription = simplify(medDescription)
-# print(newDescription)
 
 
 

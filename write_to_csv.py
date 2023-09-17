@@ -8,10 +8,10 @@ def writeToCsv(content, heading = ['Medicine', 'Summary']):
     '''
 
     i = 0
-    while os.path.exists(f'test{i}.csv'):
+    while os.path.exists(f'Database summary{i}.csv'):
         i += 1
 
-    file = f'test{i}.csv'
+    file = f'Database summary{i}.csv'
 
     with open(file, 'w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames = heading)

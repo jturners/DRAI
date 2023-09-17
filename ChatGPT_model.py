@@ -39,7 +39,7 @@ def simplify(prompt, medName, model="gpt-4"):
     messages = [
         {
             "role": "system",
-            "content": f"Summarise the medicinal content for {medName} given by the user without losing factual and statistical content" 
+            "content": f"Summarise the medicinal content for {medName} given by the user without losing factual and statistical content. Summarize it step by step." 
         }
         ]
     messages.append(prompt)
@@ -53,7 +53,7 @@ def getGeneralSearch(prompt, model="gpt-4"):
     messages = [
         {
             "role": "system",
-            "content": "Help user find relevent information about the given medicine. Provide indications and usage, dosage and administration ,dosage forms and strengths, contraindications,warnings and cautions"
+            "content": "Help user find relevent information about the given medicine. Provide indications and usage, dosage and administration ,dosage forms and strengths, contraindications,warnings and cautions. Summarize the result."
         }
         ]
     messages.append(prompt)

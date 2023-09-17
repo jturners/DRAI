@@ -1,17 +1,12 @@
 import os, json, time
-
 import openai
-
 from write_to_csv import writeToCsv
 
+start = time.time()
 file = "first45.json"
 
 with open(file) as project_file:    
     data = json.load(project_file)  
-
-firstN = 3
-medlist = data[0: firstN]
-#medName = medlist[0]["substance_name"]
 
 descriptionList = ['substance_name',
                     'indications_and_usage',
@@ -34,7 +29,6 @@ descriptionList = ['substance_name',
                     'information_for_patients'
                     ]
 
-
 openai.organization = "org-6AKIjdbpljcerbhjbd24A2Qz"
 # Load your API key from an environment variable
 
@@ -45,7 +39,7 @@ def simplify(prompt, model="gpt-4"):
     messages = [
         {
             "role": "system",
-            "content": "Simplify and summarise the content given by the user"
+            "content": "Summarise the medicinal content given by the user without losing factual and statistical content"
         }
         ]
     messages.append(prompt)
@@ -66,37 +60,13 @@ def getGeneralSearch(prompt, model="gpt-4"):
     response = openai.ChatCompletion.create(model=model, temperature=0, messages=messages)
     return response.choices[0].message["content"]
 
-def formatResponse(response, medicine):
-    return {"Medicine": medicine, "Summary": response}
+def formatResponse(medicine, GPTSummary, GeneralSummary ):
+    return {"Medicine": str(medicine), "Database Summary": str(GPTSummary), "General Summary": str(GeneralSummary)}
 
-start = time.time()
-sumSubSummary = ''
-for med1 in medlist:
-    medDescription = ''
-    for category in descriptionList:
-        if category in med1:
-            name = category.replace('_', ' ')
-            description = med1[category]
-            if len(description) > 1000:
-                medDescription = simplify({"role": "user", "content": description})
-                sumSubSummary += f'{name}: {medDescription} \n'
-            else:
-                sumSubSummary += f'{name}: {description} \n'
-
-
-    with open('output1.txt', 'a') as f:
-        f.write(sumSubSummary)
-        f.write(2*"\n")
-
-    f.close()
-    
-
-end = time.time()
-print(end-start)
-
-def getGeneralSummary(medList, descriptionList) -> list:
+def getGeneralSummary(medlist) -> list:
 
     generalSummaryList = []
+    medDescription = ""
     for medicine in medlist:
         name = medicine['substance_name']
         medDescription = getGeneralSearch({"role": "user", "content": f"what is {name}"})
@@ -104,25 +74,50 @@ def getGeneralSummary(medList, descriptionList) -> list:
         
     return generalSummaryList
 
-# print(medDescription)
-# first medicine chosen
+def getGPTSummary(medlist, descriptionList):
+
+    GPTSummaryList = []
+    for med1 in medlist:
+        ultimateSummary = ""
+        sumSubSummary = ""
+        medDescription = ""
+        for category in descriptionList:
+            if category in med1:
+                name = category.replace('_', ' ')
+                description = med1[category]
+                if len(description) > 1000:
+                    medDescription = simplify({"role": "user", "content": description})
+                    sumSubSummary += f'{name}: {medDescription}'
+                else:
+                    sumSubSummary += f'{name}: {description}'
+        ultimateSummary += simplify({"role": "user", "content": sumSubSummary})
+        GPTSummaryList.append(ultimateSummary)
+        
+    return GPTSummaryList
+
+firstN = 2
+medlist = data[0: firstN]
+
+dataBasedGPT_data = getGPTSummary(medlist, descriptionList)
+generalSummaryList = getGeneralSummary(medlist)
+
+    # with open('output1.txt', 'a') as f:
+    #     f.write(sumSubSummary)
+    #     f.write(2*"\n")
+
+    # dataBasedGPT_data.append(sumSubSummary)
+    
+#now we can use medlist and dataBasedGPT_data lists
 
 
 
-# test case
-#prompt = {"role": "user", "content": "Meloxicam - Meloxicam is a nonsteroidal anti-inflammatory drug (NSAID) used to relieve the symptoms of arthritis (juvenile rheumatoid arthritis, osteoarthritis, and rheumatoid arthritis), such as inflammation, swelling, stiffness, and joint pain."}
+csv = []
 
-# input requests are used for testing purposes
-# csv = []
-# medicine = input('Medicine ')
+for i, GeneralSummary in enumerate(generalSummaryList):
+    csv.append(formatResponse(medlist[i]['substance_name'], dataBasedGPT_data[i], GeneralSummary))
 
-# lookUpPrompt = {"role": "user", "content": f"what is {medicine}"}
+writeToCsv(csv)
 
-#medicineName = med1['substance_name']
-# lookUpResponse = getGeneralSearch(lookUpPrompt)
-# csv.append(formatResponse(lookUpResponse, medicine))
-
-# writeToCsv(csv)
-
-
+end = time.time()
+print(end-start)
 

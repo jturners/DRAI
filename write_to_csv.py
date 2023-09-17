@@ -8,7 +8,7 @@ def writeToCsv(content, heading = ['Medicine', 'Database Summary', 'General Summ
     '''
 
     i = 0
-    while os.path.exists(f'Database summary{i}.csv'):
+    while os.path.exists(f'Medicine Summary{i}.csv'):
         i += 1
 
     file = f'Medicine Summary{i}.csv'

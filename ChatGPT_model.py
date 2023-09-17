@@ -109,8 +109,8 @@ def getGPTSummary(medlist, descriptionList):
         
     return GPTSummaryList
 
-firstN = 2
-medlist = data[0: firstN]
+firstN = 21
+medlist = data[16: firstN]
 
 dataBasedGPT_data = getGPTSummary(medlist, descriptionList)
 generalSummaryList = getGeneralSummary(medlist)
@@ -122,8 +122,6 @@ generalSummaryList = getGeneralSummary(medlist)
     # dataBasedGPT_data.append(sumSubSummary)
     
 #now we can use medlist and dataBasedGPT_data lists
-
-
 
 csv = []
 

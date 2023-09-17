@@ -1,20 +1,21 @@
 import csv, os
 
 
-def writeToCsv(content, heading = ['Medicine', 'Summary']):
+def writeToCsv(content, heading = ['Medicine', 'Database Summary', 'General Summary']):
 
     '''
-    content needs to be in the form of [{"Medicine": "name", "Summary": "stuff"}, ...]
+    content needs to be in the form of [{"Medicine": "name", "Database Summary": "stuff", "General Summary": "stuff"}, ...]
     '''
 
     i = 0
     while os.path.exists(f'Database summary{i}.csv'):
         i += 1
 
-    file = f'Database summary{i}.csv'
+    file = f'Medicine Summary{i}.csv'
 
     with open(file, 'w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames = heading)
         writer.writeheader()
         writer.writerows(content)
+
     

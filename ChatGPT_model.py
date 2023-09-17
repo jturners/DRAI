@@ -3,14 +3,13 @@ import os, json, time
 import openai
 
 from write_to_csv import writeToCsv
-# from get_medicine import getMed
 
 file = "first45.json"
 
 with open(file) as project_file:    
     data = json.load(project_file)  
 
-firstN = 10
+firstN = 3
 medlist = data[0: firstN]
 #medName = medlist[0]["substance_name"]
 
@@ -41,7 +40,6 @@ openai.organization = "org-6AKIjdbpljcerbhjbd24A2Qz"
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 openai.Model.list()
-# chat_completion = openai.ChatCompletion.create(model="gpt-4", messages=[{"role": "user", "content": "Hello world"}])
 
 def simplify(prompt, model="gpt-4"):
     messages = [
@@ -61,15 +59,15 @@ def getGeneralSearch(prompt, model="gpt-4"):
     messages = [
         {
             "role": "system",
-            "content": "Help user find relevent information about the given medicine, with indications and usage, dosage and administration ,dosage forms and strengths, contraindications,warnings and cautions"
+            "content": "Help user find relevent information about the given medicine. Provide indications and usage, dosage and administration ,dosage forms and strengths, contraindications,warnings and cautions"
         }
         ]
     messages.append(prompt)
     response = openai.ChatCompletion.create(model=model, temperature=0, messages=messages)
     return response.choices[0].message["content"]
 
-# def formatResponse(response, medicine):
-#     return {"Medicine": medicine, "Summary": response}
+def formatResponse(response, medicine):
+    return {"Medicine": medicine, "Summary": response}
 
 start = time.time()
 sumSubSummary = ''
@@ -80,7 +78,7 @@ for med1 in medlist:
             name = category.replace('_', ' ')
             description = med1[category]
             if len(description) > 1000:
-                medDescription = simplify({"role": "user", "content": description} )
+                medDescription = simplify({"role": "user", "content": description})
                 sumSubSummary += f'{name}: {medDescription} \n'
             else:
                 sumSubSummary += f'{name}: {description} \n'
@@ -95,6 +93,17 @@ for med1 in medlist:
 
 end = time.time()
 print(end-start)
+
+def getGeneralSummary(medList, descriptionList) -> list:
+
+    generalSummaryList = []
+    for medicine in medlist:
+        name = medicine['substance_name']
+        medDescription = getGeneralSearch({"role": "user", "content": f"what is {name}"})
+        generalSummaryList.append(medDescription)
+        
+    return generalSummaryList
+
 # print(medDescription)
 # first medicine chosen
 
